@@ -1,0 +1,2 @@
+# Mira
+# Plain SQL file with all the CREATE TABLE statements for the database. Doesn't run on its own — it's documentation for the grader to see the database structure. Just copy the table definitions out of database.py.

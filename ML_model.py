@@ -1,0 +1,2 @@
+# Mohammed
+# Two things: the auto-categorizer (TF-IDF + Naive Bayes) that predicts a category from a transaction description, and the spending predictor (linear regression) that forecasts next month's spending per category based on history.

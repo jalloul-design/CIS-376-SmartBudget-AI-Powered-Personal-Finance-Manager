@@ -1,0 +1,2 @@
+# Mira
+# Defines the three core data classes: Transaction, Budget, and Category. Each class represents a real object in the app and contains the logic for saving, updating, and deleting itself from the database.

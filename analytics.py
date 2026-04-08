@@ -1,0 +1,2 @@
+# Mohammed
+# Calculates all the financial metrics — total income, total expenses, savings rate, average daily spending, top spending categories, and period-over-period comparisons. Also generates the monthly report with personalized recommendations.

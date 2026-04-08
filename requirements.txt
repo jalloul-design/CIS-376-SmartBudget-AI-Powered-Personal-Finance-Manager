@@ -1,0 +1,2 @@
+#Mira
+# Lists every pip package the project needs. At minimum: scikit-learn, pandas, numpy, matplotlib, seaborn, Pillow. The grader runs pip install -r requirements.txt to set up the environment.

@@ -1,0 +1,2 @@
+# Aafikah
+# End-to-end workflow tests. Simulates a full user flow: add a transaction → check analytics update → check budget alert triggers → generate a report. Also tests edge cases like empty database, invalid inputs, and budget overflow.

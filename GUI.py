@@ -1,0 +1,2 @@
+# Hussein
+# All Tkinter screens in one file. Main window with navigation, transaction entry/edit/delete screen, budget dashboard with progress bars and color alerts, analytics dashboard with embedded charts (pie, line, bar), and the monthly report viewer.

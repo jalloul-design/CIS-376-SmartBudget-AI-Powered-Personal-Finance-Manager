@@ -1,0 +1,2 @@
+# Aafikah
+# Unit tests for Mira's code. Tests that transactions can be added, edited, and deleted correctly. Tests that budgets save and calculate percentages right. Tests that categories work as expected.
