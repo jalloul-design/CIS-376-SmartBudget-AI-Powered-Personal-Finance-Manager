@@ -1,8 +1,4 @@
-# Mira
-# Stores all constants and settings. Things like the database filename, budget alert thresholds (e.g. 80% = warning, 100% = over limit), and any app-wide variables everyone else imports from.
-
 import os
-
 database_name = "SmartBudget.db"
 
 warning_threshold = 0.80

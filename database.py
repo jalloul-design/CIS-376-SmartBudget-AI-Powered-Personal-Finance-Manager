@@ -1,5 +1,3 @@
-# Mira
-# Handles everything SQLite related. Creates the database and tables on first run, and provides functions for connecting and running queries. Every other file that needs the DB goes through this file.
 
 import sqlite3
 from config import database_name, DEFAULT_CATEGORIES
