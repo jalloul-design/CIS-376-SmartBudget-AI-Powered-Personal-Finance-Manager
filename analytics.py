@@ -19,11 +19,11 @@ class AnalyticsEngine:
 
     def total_income(self, month=None, year=None):
         transactions = self.get_transactions(month, year)
-        return round(sum(t[2] for t in transactions if t[2] > 0), 2)
+        return round(sum(t["amount"] for t in transactions if t["amount"] > 0), 2)
 
     def total_expenses(self, month=None, year=None):
         transactions = self.get_transactions(month, year)
-        return round(sum(abs(t[2]) for t in transactions if t[2] < 0), 2)
+        return round(sum(abs(t["amount"]) for t in transactions if t["amount"] < 0), 2)
 
     def savings_rate(self, month=None, year=None):
         income = self.total_income(month, year)
@@ -34,19 +34,19 @@ class AnalyticsEngine:
 
     def average_daily_spending(self, month=None, year=None):
         transactions = self.get_transactions(month, year)
-        expenses = [t for t in transactions if t[2] < 0]
+        expenses = [t for t in transactions if t["amount"] < 0]
         if not expenses:
             return 0.0
         dates = set(t[3] for t in expenses)
-        total = sum(abs(t[2]) for t in expenses)
+        total = sum(abs(t["amount"]) for t in expenses)
         return round(total / len(dates), 2)
 
     def spending_by_category(self, month=None, year=None):
         transactions = self.get_transactions(month, year)
         category_totals = defaultdict(float)
         for t in transactions:
-            if t[2] < 0:
-                category_totals[t[4]] += abs(t[2])
+            if t["amount"] < 0:
+                category_totals[t[4]] += abs(t["amount"])
         return {k: round(v, 2) for k, v in sorted(category_totals.items(), key=lambda x: x[1], reverse=True)}
 
     def top_expense_categories(self, month=None, year=None, top_n=3):
