@@ -58,7 +58,7 @@ class Transactions:
     def __init__(self, id, amount, date, description,category_id, payment_method, type, recurring=0):
         # storing all the details for transaction
         self.id             = id
-        self.amount         = amount
+        self.amount         = float(amount)
         self.date           = date
         self.description    = description
         self.category_id    = category_id
@@ -160,14 +160,18 @@ class Budget:
         connection.close()
 
     def get_spent(self):
-        # gets the calculations for the money spent within one of the budgets categories
         connection = get_connection()
-        row = connection.execute('''SELECT (SUM(amount), 0) AS total FROM transactions WHERE category_id = ? AND type = "expense"''',(self.category_id,)).fetchone()
-        connection.close()
-        # If the transaction is empty, the sum will return as None and then return as 0
-        if row['total'] is None:
-            return 0.0
-        return row['total']
+
+        row = connection.execute(
+            '''
+            SELECT COALESCE(SUM(amount), 0)
+            FROM transactions
+            WHERE category_id = ? AND type = "expense"
+            ''',
+            (self.category_id,)
+        ).fetchone()
+
+        return abs(row[0])
 
     def get_the_percentage_used(self):
         # gets the percentage of how much the budget as been used.
