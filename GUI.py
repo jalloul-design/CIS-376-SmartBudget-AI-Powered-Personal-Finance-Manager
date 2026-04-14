@@ -251,33 +251,67 @@ class BudgetScreen(tk.Frame):
         tk.Label(self, text="Budget Dashboard", bg="#1e1e2e", fg="#a9b1d6",
                  font=("Helvetica", 16, "bold")).pack(pady=(20, 5), anchor="w", padx=30)
 
-        canvas_frame = tk.Frame(self, bg="#1e1e2e")
-        canvas_frame.pack(fill="both", expand=True, padx=30)
+        form = tk.Frame(self, bg="#2c2f3f", pady=10)
+        form.pack(fill="x", padx=30, pady=(0, 10))
+
+        self.categories = Categories.get_all_categories()
+        self.cat_names = [c.name for c in self.categories]
+
+        tk.Label(form, text="Category", bg="#2c2f3f", fg="#7aa2f7",
+                 font=("Helvetica", 9)).grid(row=0, column=0, padx=8, sticky="w")
+        tk.Label(form, text="Monthly Limit ($)", bg="#2c2f3f", fg="#7aa2f7",
+                 font=("Helvetica", 9)).grid(row=0, column=1, padx=8, sticky="w")
+
+        self.cat_var = tk.StringVar(value=self.cat_names[0] if self.cat_names else "")
+        ttk.Combobox(form, textvariable=self.cat_var, values=self.cat_names,
+                     width=14, state="readonly").grid(row=1, column=0, padx=8, pady=4)
+
+        self.limit_entry = tk.Entry(form, width=14, bg="#3d4166", fg="white",
+                                    insertbackground="white")
+        self.limit_entry.grid(row=1, column=1, padx=8, pady=4)
+
+        tk.Button(form, text="➕ Set Budget", bg="#7aa2f7", fg="black", relief="flat",
+                  font=("Helvetica", 10, "bold"), padx=12,
+                  command=self._add_budget).grid(row=1, column=2, padx=8)
+
+        self.list_frame = tk.Frame(self, bg="#1e1e2e")
+        self.list_frame.pack(fill="both", expand=True, padx=30)
+
+        self._load_budgets()
+
+    def _add_budget(self):
+        try:
+            cat = Categories.get_by_name(self.cat_var.get())
+            if not cat:
+                messagebox.showerror("Error", "Category not found.")
+                return
+            b = Budget(None, cat.id, float(self.limit_entry.get()), "monthly")
+            b.save()
+            self.limit_entry.delete(0, "end")
+            self._load_budgets()
+            messagebox.showinfo("Success", "Budget set!")
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+
+    def _load_budgets(self):
+        for w in self.list_frame.winfo_children():
+            w.destroy()
 
         budgets = Budget.get_all_budget()
         if not budgets:
-            tk.Label(self, text="No budgets set yet.", bg="#1e1e2e", fg="#565f89",
-                     font=("Helvetica", 12)).pack(pady=40)
+            tk.Label(self.list_frame, text="No budgets set yet.", bg="#1e1e2e",
+                     fg="#565f89", font=("Helvetica", 12)).pack(pady=40)
             return
 
         for b in budgets:
-            cat    = Categories.get_by_category_id(b.category_id)
-            name   = cat.name if cat else f"Category {b.category_id}"
-            spent  = b.get_spent()
-            limit  = b.amount
-            pct    = min((spent / limit * 100) if limit > 0 else 0, 100)
+            cat = Categories.get_by_category_id(b.category_id)
+            name = cat.name if cat else f"Category {b.category_id}"
+            spent = b.get_spent()
+            limit = b.amount
+            pct = min((spent / limit * 100) if limit > 0 else 0, 100)
+            color = "#9ece6a" if pct < 75 else ("#e0af68" if pct < 100 else "#f7768e")
 
-            if pct < 75:
-                color = "#9ece6a"   # green
-                label_color = "#9ece6a"
-            elif pct < 100:
-                color = "#e0af68"   # yellow
-                label_color = "#e0af68"
-            else:
-                color = "#f7768e"   # red
-                label_color = "#f7768e"
-
-            row = tk.Frame(canvas_frame, bg="#2c2f3f", pady=8, padx=16)
+            row = tk.Frame(self.list_frame, bg="#2c2f3f", pady=8, padx=16)
             row.pack(fill="x", pady=6, ipady=4)
 
             tk.Label(row, text=name, bg="#2c2f3f", fg="#c0caf5",
@@ -294,10 +328,8 @@ class BudgetScreen(tk.Frame):
 
             status = "✅ OK" if pct < 75 else ("⚠️ Near Limit" if pct < 100 else "🚨 Over Budget!")
             tk.Label(row, text=f"${spent:.2f} / ${limit:.2f}  ({pct:.0f}%)  {status}",
-                     bg="#2c2f3f", fg=label_color,
+                     bg="#2c2f3f", fg=color,
                      font=("Helvetica", 10)).grid(row=0, column=2, padx=10)
-
-
 #  ANALYTICS SCREEN
 class AnalyticsScreen(tk.Frame):
     def __init__(self, parent):
